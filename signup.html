@@ -10,6 +10,29 @@
 		<link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
         <!-- Place favicon.ico in the root directory -->
 
+        <!-- Add these scripts in the <head> -->
+        <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-firestore-compat.js"></script>
+
+        <!-- Your Firebase config -->
+        <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyArUEs5b1UGm1A1pjfIuzosU3tx3oCYqME",
+            authDomain: "user-auth-2e7ac.firebaseapp.com",
+            projectId: "user-auth-2e7ac",
+            storageBucket: "user-auth-2e7ac.firebasestorage.app",
+            messagingSenderId: "1011471974269",
+            appId: "1:1011471974269:web:cc0704d9c7393af9465614",
+            measurementId: "G-JVR9S1YEWK"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        </script>
+
 		<!-- CSS here -->
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/animate.min.css">
@@ -59,18 +82,18 @@
                 <div class="row justify-content-center">
                     <div class="col-xl-6 col-lg-8">
                         <div class="contact-form" style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.1);">
-                            <form action="#" method="POST">
+                            <form id="signup-form" action="#" method="POST">
                                 <div class="form-group">
-                                    <label for="fullname" style="color: #2e5a1c; margin-bottom: 8px;">Full Name</label>
-                                    <input type="text" id="fullname" placeholder="Enter your full name" required style="border: 2px solid #e0e0e0; border-radius: 8px; padding: 12px;">
+                                    <label for="signup-name" style="color: #2e5a1c; margin-bottom: 8px;">Full Name</label>
+                                    <input type="text" id="signup-name" placeholder="Enter your full name" required style="border: 2px solid #e0e0e0; border-radius: 8px; padding: 12px;">
                                 </div>
                                 <div class="form-group">
-                                    <label for="email" style="color: #2e5a1c; margin-bottom: 8px;">Email Address</label>
-                                    <input type="email" id="email" placeholder="Enter your email address" required style="border: 2px solid #e0e0e0; border-radius: 8px; padding: 12px;">
+                                    <label for="signup-email" style="color: #2e5a1c; margin-bottom: 8px;">Email Address</label>
+                                    <input type="email" id="signup-email" placeholder="Enter your email address" required style="border: 2px solid #e0e0e0; border-radius: 8px; padding: 12px;">
                                 </div>
                                 <div class="form-group">
-                                    <label for="password" style="color: #2e5a1c; margin-bottom: 8px;">Password</label>
-                                    <input type="password" id="password" placeholder="Create a strong password" required style="border: 2px solid #e0e0e0; border-radius: 8px; padding: 12px;">
+                                    <label for="signup-password" style="color: #2e5a1c; margin-bottom: 8px;">Password</label>
+                                    <input type="password" id="signup-password" placeholder="Create a strong password" required style="border: 2px solid #e0e0e0; border-radius: 8px; padding: 12px;">
                                 </div>
                                 <div class="form-group">
                                     <label for="confirm-password" style="color: #2e5a1c; margin-bottom: 8px;">Confirm Password</label>
@@ -99,6 +122,55 @@
             </div>
         </section>
     </main>
+
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const name = document.getElementById('signup-name').value;
+            const role = document.getElementById('role').value;
+
+            // Validate passwords match
+            if(password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            // Validate password length
+            if(password.length < 6) {
+                alert('Password should be at least 6 characters long');
+                return;
+            }
+
+            // Validate role selection
+            if(!role) {
+                alert('Please select a role');
+                return;
+            }
+        
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Add user to Firestore with role
+                    return db.collection('users').doc(userCredential.user.uid).set({
+                        name: name,
+                        email: email,
+                        role: role,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                })
+                .then(() => {
+                    alert('Signup successful!');
+                    window.location.href = '/dashboard.html'; // Redirect
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert('Error: ' + error.message);
+                });
+        });
+    </script>
 
     <!-- JS here -->
     <script src="js/vendor/jquery-3.5.0.min.js"></script>

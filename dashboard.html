@@ -1,0 +1,520 @@
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>GreenHeart - Farmer Dashboard</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+
+        <!-- Firebase Scripts -->
+        <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-firestore-compat.js"></script>
+
+        <!-- Firebase Config -->
+        <script>
+            const firebaseConfig = {
+                apiKey: "AIzaSyArUEs5b1UGm1A1pjfIuzosU3tx3oCYqME",
+                authDomain: "user-auth-2e7ac.firebaseapp.com",
+                projectId: "user-auth-2e7ac",
+                storageBucket: "user-auth-2e7ac.firebasestorage.app",
+                messagingSenderId: "1011471974269",
+                appId: "1:1011471974269:web:cc0704d9c7393af9465614",
+                measurementId: "G-JVR9S1YEWK"
+            };
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const db = firebase.firestore();
+        </script>
+
+        <!-- CSS here -->
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/animate.min.css">
+        <link rel="stylesheet" href="css/magnific-popup.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/owl.carousel.min.css">
+        <link rel="stylesheet" href="css/odometer.css">
+        <link rel="stylesheet" href="css/jquery-ui.css">
+        <link rel="stylesheet" href="css/flaticon.css">
+        <link rel="stylesheet" href="css/aos.css">
+        <link rel="stylesheet" href="css/slick.css">
+        <link rel="stylesheet" href="css/default.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/responsive.css">
+
+        <style>
+            .dashboard-card {
+                background: white;
+                border-radius: 15px;
+                padding: 25px;
+                margin-bottom: 25px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                transition: transform 0.3s ease;
+            }
+            .dashboard-card:hover {
+                transform: translateY(-5px);
+            }
+            .soil-meter {
+                height: 10px;
+                border-radius: 5px;
+                margin: 8px 0;
+            }
+            .action-button {
+                background: #4CAF50;
+                color: white;
+                padding: 12px 25px;
+                border-radius: 25px;
+                border: none;
+                transition: all 0.3s ease;
+                width: 100%;
+                margin: 10px 0;
+            }
+            .action-button:hover {
+                background: #2e5a1c;
+                transform: scale(1.02);
+            }
+        </style>
+    </head>
+    <body>
+        <!-- preloader -->
+        <div id="preloader">
+            <div id="loading-center">
+                <div id="loading-center-absolute">
+                    <div class="object" id="object_one"></div>
+                    <div class="object" id="object_two"></div>
+                    <div class="object" id="object_three"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll-top -->
+        <button class="scroll-top scroll-to-target" data-target="html">
+            <i class="fas fa-angle-up"></i>
+        </button>
+
+        <!-- Header -->
+        <header class="header-style-two">
+            <div class="header-top-wrap" style="background: #4CAF50;">
+                <div class="container custom-container">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="header-top-left">
+                                <ul>
+                                    <li><i class="far fa-envelope"></i> greenheart@gmail.com</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="header-top-right text-right">
+                                <button id="logout" class="btn" style="background: #2e5a1c; color: white; padding: 5px 15px; border-radius: 15px;">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="pt-120 pb-120" style="background: linear-gradient(rgba(255,255,255,0.97), rgba(255,255,255,0.97)), url('img/bg/farm_bg.jpg') center/cover fixed;">
+                <div class="container">
+                    <!-- Header Section -->
+                    <div class="row justify-content-center mb-5">
+                        <div class="col-lg-10 text-center">
+                            <div class="dashboard-header animate__animated animate__fadeIn">
+                                <span class="badge bg-success-soft fs-5 mb-3"><i class="fas fa-tractor me-2"></i>Farmer Dashboard</span>
+                                <h1 class="display-5 fw-bold text-success mt-2" id="welcome">Good Morning, Rajesh!</h1>
+                                <p class="lead text-muted">Today is <span id="currentDate" class="text-success">23rd October 2023</span></p>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Dashboard Cards Grid -->
+                    <div class="row g-4">
+                        <!-- Farm Details Card -->
+                        <div class="col-xl-3 col-lg-6">
+                            <div class="card dashboard-card h-100 hover-scale">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-shape icon-lg bg-success-soft rounded-circle me-3">
+                                            <i class="fas fa-map-marked-alt text-success fs-4"></i>
+                                        </div>
+                                        <h3 class="mb-0">Farm Details</h3>
+                                    </div>
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="d-flex mb-2">
+                                            <i class="fas fa-ruler-combined text-muted me-2 mt-1"></i>
+                                            <span>Total Area: <strong class="text-success" id="farmArea">5.5 hectares</strong></span>
+                                        </li>
+                                        <li class="d-flex mb-2">
+                                            <i class="fas fa-seedling text-muted me-2 mt-1"></i>
+                                            <span>Current Crop: <strong class="text-success" id="currentCrop">Wheat</strong></span>
+                                        </li>
+                                        <li class="d-flex">
+                                            <i class="fas fa-calendar-day text-muted me-2 mt-1"></i>
+                                            <span>Planted: <strong class="text-success" id="plantingDate">15 Oct 2023</strong></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <!-- Weather Card -->
+                        <div class="col-xl-3 col-lg-6">
+                            <div class="card dashboard-card h-100 hover-scale">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-shape icon-lg bg-info-soft rounded-circle me-3">
+                                            <i class="fas fa-cloud-sun text-info fs-4"></i>
+                                        </div>
+                                        <h3 class="mb-0">Weather</h3>
+                                    </div>
+                                    <div class="weather-widget text-center">
+                                        <div class="weather-icon mb-3">
+                                            <i class="fas fa-sun fa-3x text-warning"></i>
+                                        </div>
+                                        <h2 class="mb-1"><span id="temperature">24°C</span></h2>
+                                        <p class="text-muted mb-2">Partly Cloudy</p>
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <div class="p-2 bg-light rounded">
+                                                    <i class="fas fa-tint text-primary me-1"></i>
+                                                    <span id="humidity">65%</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="p-2 bg-light rounded">
+                                                    <i class="fas fa-wind text-primary me-1"></i>
+                                                    <span>12 km/h</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <!-- Soil Health Card -->
+                        <div class="col-xl-3 col-lg-6">
+                            <div class="card dashboard-card h-100 hover-scale">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="icon-shape icon-lg bg-warning-soft rounded-circle me-3">
+                                            <i class="fas fa-seedling text-warning fs-4"></i>
+                                        </div>
+                                        <h3 class="mb-0">Soil Health</h3>
+                                    </div>
+                                    <div class="soil-progress">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Nitrogen (N)</span>
+                                            <small class="text-muted">70%</small>
+                                        </div>
+                                        <div class="progress mb-3" style="height: 8px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 70%"></div>
+                                        </div>
+        
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Phosphorus (P)</span>
+                                            <small class="text-muted">45%</small>
+                                        </div>
+                                        <div class="progress mb-3" style="height: 8px;">
+                                            <div class="progress-bar bg-info" role="progressbar" style="width: 45%"></div>
+                                        </div>
+        
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Potassium (K)</span>
+                                            <small class="text-muted">60%</small>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 60%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <!-- Smart Tools Card -->
+                        <!-- Smart Tools Card -->
+                        <div class="col-xl-3 col-lg-6">
+                            <div class="card dashboard-card h-100 hover-scale">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="icon-shape icon-lg bg-primary-soft rounded-circle me-3">
+                                            <i class="fas fa-magic text-primary fs-4"></i>
+                                        </div>
+                                        <h3 class="mb-0">Smart Tools</h3>
+                                    </div>
+                                    <div class="row g-3">
+                                        <!-- Crop Recommendation -->
+                                        <div class="col-12">
+                                            <a href="https://greenheart.streamlit.app/" class="tool-card bg-success-hover">
+                                                <div class="d-flex align-items-center p-3 rounded-3">
+                                                    <div class="icon-wrapper bg-success">
+                                                        <i class="fas fa-seedling fa-lg text-white"></i>
+                                                    </div>
+                                                    <div class="ms-3">
+                                                        <h6 class="mb-0">Crop Recommendation</h6>
+                                                        <p class="text-muted mb-0 small">Get AI-powered crop suggestions</p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                        <!-- Disease Detection -->
+                                        <div class="col-12">
+                                            <a href="https://greenheart.streamlit.app/" class="tool-card bg-info-hover">
+                                                <div class="d-flex align-items-center p-3 rounded-3">
+                                                    <div class="icon-wrapper bg-info">
+                                                        <i class="fas fa-bug fa-lg text-white"></i>
+                                                    </div>
+                                                    <div class="ms-3">
+                                                        <h6 class="mb-0">Disease Detection</h6>
+                                                        <p class="text-muted mb-0 small">Identify plant diseases</p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <style>
+                        .tool-card {
+                            text-decoration: none !important;
+                            transition: all 0.3s ease;
+                            border: 1px solid rgba(0,0,0,0.05);
+                            display: block;
+                            position: relative;
+                            overflow: hidden;
+                        }
+
+                        .tool-card::before {
+                            content: '';
+                            position: absolute;
+                            top: 0;
+                            left: -100%;
+                            width: 100%;
+                            height: 100%;
+                            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+                            transition: 0.5s;
+                        }
+
+                        .tool-card:hover::before {
+                            left: 100%;
+                        }
+
+                        .tool-card:hover {
+                            transform: translateY(-2px);
+                            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+                        }
+
+                        .icon-wrapper {
+                            width: 45px;
+                            height: 45px;
+                            border-radius: 12px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            transition: transform 0.3s ease;
+                        }
+
+                        .tool-card:hover .icon-wrapper {
+                            transform: scale(1.1);
+                        }
+
+                        .bg-success-hover:hover { background: rgba(76,175,80,0.05); }
+                        .bg-info-hover:hover { background: rgba(23,162,184,0.05); }
+                        .bg-warning-hover:hover { background: rgba(255,193,7,0.05); }
+                        .bg-danger-hover:hover { background: rgba(220,53,69,0.05); }
+
+                        .tool-card h6 {
+                            color: #333;
+                            transition: color 0.3s ease;
+                        }
+
+                        .tool-card:hover h6 {
+                            color: #2e5a1c;
+                        }
+                        </style>
+                    </div>
+                    
+                    <!-- Additional Sections -->
+                    <div class="row mt-4 g-4">
+                        <!-- Quick Actions -->
+                        <div class="col-lg-8">
+                            <div class="card dashboard-card">
+                                <div class="card-body">
+                                    <h4 class="mb-4"><i class="fas fa-bolt me-2 text-primary"></i>Quick Actions</h4>
+                                    <div class="row g-3 text-center">
+                                        <div class="col">
+                                            <button class="btn btn-action">
+                                                <i class="fas fa-cloud-download-alt fa-2x mb-2"></i>
+                                                <br>Download Report
+                                            </button>
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-action">
+                                                <i class="fas fa-bullhorn fa-2x mb-2"></i>
+                                                <br>Send Alert
+                                            </button>
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-action">
+                                                <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                                                <br>Order Supplies
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <!-- Irrigation Status -->
+                        <div class="col-lg-4">
+                            <div class="card dashboard-card">
+                                <div class="card-body text-center">
+                                    <h4 class="mb-4"><i class="fas fa-tint me-2 text-info"></i>Irrigation</h4>
+                                    <div class="gauge mx-auto mb-3">
+                                        <!-- Add gauge visualization here -->
+                                    </div>
+                                    <h3 class="text-success">Optimal</h3>
+                                    <p class="text-muted">Next irrigation in 2 days</p>
+                                    <button class="btn btn-sm btn-outline-info">Schedule Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <style>
+        .dashboard-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            background: white;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        
+        .btn-action {
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            color: #4CAF50;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-action:hover {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+        
+        .text-success-soft { color: #d4edda; }
+        .bg-success-soft { background: #d4edda; }
+        .bg-info-soft { background: #d1ecf1; }
+        .bg-warning-soft { background: #fff3cd; }
+        .bg-danger-soft { background: #f8d7da; }
+        
+        .progress-bar {
+            border-radius: 4px;
+        }
+        
+        .weather-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        </style>
+        
+        <script>
+        // Add dynamic date and time
+        function updateDateTime() {
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-IN', dateOptions);
+        }
+        
+        // Add time-based greeting
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            const greeting = hour < 12 ? 'Good Morning' : hour < 18 ? 'Good Afternoon' : 'Good Evening';
+            document.getElementById('welcome').textContent = `${greeting}, Rajesh!`;
+        }
+        
+        // Initialize functions
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateTime();
+            updateGreeting();
+            setInterval(updateDateTime, 1000);
+        });
+        </script>
+
+        <!-- JS here -->
+        <script src="js/vendor/jquery-3.5.0.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/isotope.pkgd.min.js"></script>
+        <script src="js/imagesloaded.pkgd.min.js"></script>
+        <script src="js/jquery.magnific-popup.min.js"></script>
+        <script src="js/jquery.countdown.min.js"></script>
+        <script src="js/jquery.odometer.min.js"></script>
+        <script src="js/jquery.appear.js"></script>
+        <script src="js/slick.min.js"></script>
+        <script src="js/ajax-form.js"></script>
+        <script src="js/wow.min.js"></script>
+        <script src="js/aos.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+        <script>
+            auth.onAuthStateChanged((user) => {
+                if (!user) {
+                    window.location.href = '/login.html';
+                } else {
+                    // Get user data from Firestore
+                    db.collection('users').doc(user.uid).get()
+                        .then((doc) => {
+                            if (doc.exists) {
+                                document.getElementById('welcome').textContent = `Welcome, ${doc.data().name}`;
+                            } else {
+                                document.getElementById('welcome').textContent = `Welcome, ${user.email}`;
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error getting user data:", error);
+                            document.getElementById('welcome').textContent = `Welcome, ${user.email}`;
+                        });
+                }
+            });
+
+            document.getElementById('logout').addEventListener('click', () => {
+                auth.signOut().then(() => {
+                    window.location.href = '/login.html';
+                });
+            });
+        </script>
+    </body>
+</html>
