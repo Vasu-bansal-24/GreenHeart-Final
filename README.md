@@ -41,7 +41,7 @@ To set up the project locally:
 3. Open `index.html` in a browser to view the application.
 
 ## Deployment
-The project is hosted on Vercel. Access the live version here: [GreenHeart](https://green-heart-team.vercel.app)
+The project is hosted on Vercel. Access the live version here: [GreenHeart](https://green-heart-final.vercel.app)
 
 ## Contact
 For any queries or contributions, please reach out to:
